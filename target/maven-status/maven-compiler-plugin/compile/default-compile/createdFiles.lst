@@ -1,0 +1,5 @@
+com\bumbleb\website\resources\JakartaEE11Resource.class
+com\bumbleb\security\Check.class
+com\bumbleb\website\JakartaRestConfiguration.class
+com\bumbleb\security\bcrypt.class
+com\bumbleb\website\RegisterServlet.class
