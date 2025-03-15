@@ -86,7 +86,7 @@ public class LoginServlet extends HttpServlet {
                     userIdCookie.setPath("/");
                     response.addCookie(userIdCookie);
                     
-                    out.println("Login successful");
+                    response.sendRedirect("/dashboard.jsp");
                 } else {
                     out.println("Invalid email or password");
                 }
