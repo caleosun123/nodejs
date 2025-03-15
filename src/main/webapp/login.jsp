@@ -20,5 +20,6 @@
             <input type="password" name="password" id="password" placeholder="Password..." required><br><br>
             <input type="submit" value="Login">
         </form>
+        Don't have an account? <a href="register.jsp">Register</a>.
     </body>
 </html>
