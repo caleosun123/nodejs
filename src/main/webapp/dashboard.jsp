@@ -8,77 +8,63 @@
 <%@page import="jakarta.servlet.http.Cookie" %>
 <%@page import="jakarta.servlet.http.HttpServletRequest" %>
 <%@page import="jakarta.servlet.http.HttpServletResponse" %>
-<%@page import="java.sql.Connection" %>
-<%@page import="java.sql.DriverManager" %>
-<%@page import="java.sql.PreparedStatement" %>
-<%@page import="java.sql.ResultSet" %>
-
+<%@page import="java.sql.*" %>
 <%
 
     String DATABASE_URI = "jdbc:mysql://trolley.proxy.rlwy.net:47251/railway?user=root&password=QRiXtoCbsvFyKbWsaBpkLsouwhAeCuwJ";
     
     Cookie[] cookies = request.getCookies();
-
-    boolean isLoggedIn = false;
-    int userId = -1;
     String sessionToken = null;
-
+    int userId = -1;
+    
     if (cookies != null) {
-        for (Cookie cookie : cookies) {
+        for(Cookie cookie : cookies) {
             if("sessionToken".equals(cookie.getName())) {
                 sessionToken = cookie.getValue();
-            }
-            if("userId".equals(cookie.getName())) {
-                userId = Integer.parseInt(cookie.getValue());
+            } else if ("userId".equals(cookie.getName())) {
+                try {
+                    userId = Integer.parseInt(cookie.getValue());
+                } catch (NumberFormatException ignored) {}
             }
         }
     }
     
+    boolean isLoggedIn = false;
+    String email = "";
+    String name = "";
+    
     if(sessionToken != null) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(DATABASE_URI);
+            conn = DriverManager.getConnection(DATABASE_URI);
             
-            String query = "SELECT id FROM users WHERE session_token = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, sessionToken);
+            String query = "SELECT name, email FROM users WHERE id = ? and session_token = ?";
+            stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            stmt.setString(2, sessionToken);
+            rs = stmt.executeQuery();
             
-            ResultSet rs = stmt.executeQuery();
             if(rs.next()) {
                 isLoggedIn = true;
+                email = rs.getString("email");
+                name = rs.getString("name");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if(rs != null) try {rs.close();} catch(SQLException ignored) {}
+            if(stmt != null) try {stmt.close();} catch (SQLException ignored) {}
+            if(conn != null) try {conn.close();} catch (SQLException ignored) {}
         }
     }
     
     if(!isLoggedIn) {
         response.sendRedirect("/login.jsp");
         return;
-    }
-    
-    String email = "";
-    String name = "";
-    
-    try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection(DATABASE_URI);
-        
-        String query = "SELECT email, name FROM users WHERE id = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setInt(1, userId);
-        
-        ResultSet rs = stmt.executeQuery();
-        
-        if(rs.next()) {
-            email = rs.getString("email");
-            name = rs.getString("name");
-        }
-        stmt.close();
-        rs.close();
-        conn.close();
-    } catch (Exception e) {
-        System.out.println(e.getMessage());
     }
 
 %>
