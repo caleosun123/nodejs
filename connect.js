@@ -1,10 +1,11 @@
 const mysql = require("mysql2");
 
 const con = mysql.createConnection({
-    host: "localhost",
+    host: "trolley.proxy.rlwy.net",
+    port: 47251,
     user: "root",
-    password: "Caleb07038111(1)",
-    database: "userdb"
+    password: "QRiXtoCbsvFyKbWsaBpkLsouwhAeCuwJ",
+    database: "railway"
 });
 
 con.connect(function(err) {
