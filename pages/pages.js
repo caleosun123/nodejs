@@ -1,18 +1,18 @@
 const express = require('express');
 const auth = require("../controllers/auth");
-const { checkToken } = require('../check');
+const { checkToken, redirectDashboard } = require('../check');
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", redirectDashboard, (req, res) => {
     res.render("index.hbs");
 });
 
-router.get("/register", (req, res) => {
+router.get("/register", redirectDashboard, (req, res) => {
     res.render("register.hbs");
 });
 
-router.get("/login", (req, res) => {
+router.get("/login", redirectDashboard, (req, res) => {
     res.render("login.hbs");
 });
 

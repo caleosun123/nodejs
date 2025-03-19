@@ -14,5 +14,18 @@ exports.checkToken = (req, res, next) => {
 
         req.user = decoded;
         next();
-    })
+    });
+}
+
+exports.redirectDashboard = (req, res, next) => {
+    const token = req.cookies.token;
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if(err) {
+            return next();
+        }
+
+        req.user = decoded;
+        res.redirect("/dashboard");
+    });
 }
