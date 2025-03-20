@@ -15,7 +15,7 @@ app.use(router);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-    res.status(404).sendFile(path.join(__dirname, "public", "404.js"));
+    res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
 })
 
 app.listen(8080, () => {
